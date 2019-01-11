@@ -1,0 +1,31 @@
+{
+  "name": "gitlogs",
+  "version": "0.1.0",
+  "description": "A fast way to recursively get gitlogs per project on your working station",
+  "scripts": {
+    "build": "microbundle -i ./src/gitlogs.js -o ./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mjanssen/gitlogs.git"
+  },
+  "main": "./dist/index.js",
+  "prettier": {
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 100
+  },
+  "author": {
+    "name": "Marnix Janssen",
+    "email": "dev.marnix@gmail.com",
+    "url": "https://github.com/mjanssen"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "dayjs": "^1.7.8",
+    "kleur": "^3.0.1",
+    "microbundle": "^0.9.0",
+    "pkg": "^4.3.5",
+    "yargs": "^12.0.5"
+  }
+}
