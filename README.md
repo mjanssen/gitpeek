@@ -1,24 +1,24 @@
-# Gitlogs
-[![npm](https://img.shields.io/npm/v/gitlogs.svg)](http://npm.im/gitlogs)
+# Showgitlogs
+[![npm](https://img.shields.io/npm/v/showgitlogs.svg)](http://npm.im/showgitlogs)
 
-A __fast__ way to recursively get gitlogs per project on your working station.
+A __fast__ way to recursively show gitlogs per project on your working station.
 
 # Install
 
 ```
-npm i -g gitlogs
+npm i -g showgitlogs
 ```
 
 # Usage
 
-`gitlogs --projectPath="/Users/you/code" --since="11-01-2019" --author=marnix`
+`showgitlogs --projectPath="/Users/you/code" --since="11-01-2019" --author=marnix`
 
 # Options
 
 _Options are not required_
 
 ```
-gitlogs
+showgitlogs
   --author > pass an author
   --since > pass a start date
   --until > pass a until date
@@ -36,7 +36,7 @@ gitlogs
 
 When passing the `--skipDirectories` argument, make sure to list it as following:
 
-`gitlogs --projectPath="/Users/you/code" --skipDirectories=another-directory,and-this-one`
+`showgitlogs --projectPath="/Users/you/code" --skipDirectories=another-directory,and-this-one`
 
 # Example result
 
