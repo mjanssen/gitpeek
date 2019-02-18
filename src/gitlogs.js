@@ -1,26 +1,42 @@
+/**
+ * BACKUP FILE
+ */
+
 const { lstatSync, readdirSync } = require('fs');
 const { join } = require('path');
 const { exec } = require('child_process');
 const args = require('yargs').argv;
 const dayjs = require('dayjs');
 const dlv = require('dlv');
-const { cyan, bold, dim } = require('kleur');
+const { dim, bold, yellow, magenta } = require('kleur');
 
 const defaultSkippedDirectories = ['node_modules', 'public', '.git', '_scripts', 'app', 'vendor'];
 
+function setTime(date, { time = 'morning' }) {
+  return date
+    .set('hour', time === 'morning' ? 0 : 23)
+    .set('minute', time === 'morning' ? 0 : 59)
+    .set('second', time === 'morning' ? 0 : 59);
+}
+
 const currentDate = dayjs();
-const startDate = currentDate
-  .set('hour', 0)
-  .set('minute', 0)
-  .set('second', 0)
-  .format();
+const startDate = setTime(currentDate, { time: 'morning' });
+const untilDate = setTime(currentDate, { time: 'night' });
 
 const currentPath = __dirname;
-
 const author = dlv(args, 'author', '$GIT_USER');
-const since = dlv(args, 'since', startDate);
-const until = dlv(args, 'until', currentDate.format());
 const projectPath = dlv(args, 'projectPath', __dirname);
+const day = dlv(args, 'day', false);
+let since = dlv(args, 'since', false);
+let until = dlv(args, 'until', false);
+
+since = since !== false ? setTime(dayjs(since), { time: 'morning' }) : startDate;
+until = until !== false ? setTime(dayjs(until), { time: 'night' }) : untilDate;
+
+if (day) {
+  since = setTime(dayjs(day), { time: 'morning' });
+  until = setTime(dayjs(day), { time: 'night' });
+}
 
 const skipDirectoriesArg = dlv(args, 'skipDirectories', false);
 
@@ -40,15 +56,36 @@ const directories = getDirectoriesInFolder(projectPath);
 console.log('\n');
 getGitDirectory(directories);
 
+function gitTimeFormat(date) {
+  return date.format();
+}
+
+console.log(
+  yellow(
+    bold(
+      `Getting git logs for ${since.format('DD-MM-YYYY')}${
+        since.format('DD-MM-YYYY') !== until.format('DD-MM-YYYY')
+          ? ` to ${until.format('DD-MM-YYYY')}`
+          : ''
+      }`
+    )
+  )
+);
+console.log('\n');
+
 function getGitDirectory(directories) {
   directories.forEach(directory => {
     if (directory.match(/\.git/)) {
       exec(
-        `cd ${directory}; git log --since=${since} --until="${until}" --author="${author}" --pretty=format:%s --no-merges --reverse | cat`,
+        `cd ${directory}; git log --date=local --since="${gitTimeFormat(
+          since
+        )}" --until="${gitTimeFormat(
+          until
+        )}" --author="${author}" --pretty=format:%s --no-merges --reverse | cat`,
         (err, stdout, stderr) => {
           if (err) return;
           if (stdout === '') return;
-          console.log(cyan(bold(directory)));
+          console.log(magenta(bold(dim(directory))));
           console.log(`${stdout}`);
           console.log('\n');
         }
