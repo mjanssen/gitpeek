@@ -3,8 +3,16 @@
   "version": "0.2.0",
   "description": "A fast way to recursively get gitlogs per project on your working station",
   "scripts": {
-    "build": "ncc build ./src/gitlogs.js"
+    "main": "node ./src/gitlogs.js",
+    "build": "ncc build ./src/gitlogs.js",
+    "build:pkg": "pkg ./package.json --options optimize_for_size,max_old_space_size=920,gc_interval=100 --targets latest-linux-x64,latest-macos-x64 --out-path ./build"
   },
+  "pkg": {
+    "scripts": [
+      "dist/index.js"
+    ]
+  },
+  "bin": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/mjanssen/gitlogs.git"
@@ -26,6 +34,10 @@
     "dayjs": "^1.7.8",
     "kleur": "^3.0.1",
     "ncc": "^0.3.6",
+    "pkg": "^4.3.7",
     "yargs": "^12.0.5"
+  },
+  "dependencies": {
+    "dlv": "^1.1.3"
   }
 }

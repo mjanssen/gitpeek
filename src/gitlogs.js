@@ -1,5 +1,5 @@
 /**
- * BACKUP FILE
+ * --projectPath="/Users/user/code" --day="2020-01-01" --author=user
  */
 
 const { lstatSync, readdirSync } = require('fs');
@@ -64,10 +64,10 @@ console.log(
   yellow(
     bold(
       `Getting git logs for ${since.format('DD-MM-YYYY')}${
-        since.format('DD-MM-YYYY') !== until.format('DD-MM-YYYY')
-          ? ` to ${until.format('DD-MM-YYYY')}`
-          : ''
-      }`
+      since.format('DD-MM-YYYY') !== until.format('DD-MM-YYYY')
+        ? ` to ${until.format('DD-MM-YYYY')}`
+        : ''
+      }${author !== '$GIT_USER' ? ` from ${author}` : ''}`
     )
   )
 );
