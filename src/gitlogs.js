@@ -23,8 +23,9 @@ const currentDate = dayjs();
 const startDate = setTime(currentDate, { time: 'morning' });
 const untilDate = setTime(currentDate, { time: 'night' });
 
-const currentPath = __dirname;
-const author = dlv(args, 'author', '$GIT_USER');
+const currentUser = dlv(args, 'current-user', false);
+const author = dlv(args, 'author', currentUser ? 'current user' : false);
+
 const projectPath = dlv(args, 'projectPath', __dirname);
 const format = dlv(args, 'format', '%an <%ae> - %s');
 const day = dlv(args, 'day', false);
@@ -68,7 +69,8 @@ console.log(
       since.format('DD-MM-YYYY') !== until.format('DD-MM-YYYY')
         ? ` to ${until.format('DD-MM-YYYY')}`
         : ''
-      }${author !== '$GIT_USER' ? author === 'false' ? ' from everyone' : ` from ${author}` : ''}`
+      // }${author !== '$GIT_USER' ? author === 'false' ? ' from everyone' : ` from ${author}` : ''}`
+      }${author === false ? '' : ` from ${author}`}`
     )
   )
 );
@@ -82,7 +84,7 @@ function getGitDirectory(directories) {
           since
         )}" --until="${gitTimeFormat(
           until
-        )}" ${author === 'false' ? '--author=".*"' : `--author="${author}"`} --pretty=format:"${format}" --no-merges --reverse | cat`,
+        )}" ${author === false ? '--author=".*"' : `--author=${currentUser ? '$(git config user.name)' : author}`} --pretty=format:"${format}" --no-merges --reverse | cat`,
         (err, stdout, stderr) => {
           if (err) return;
           if (stdout === '') return;
