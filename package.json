@@ -21,10 +21,8 @@
     "url": "https://github.com/mjanssen"
   },
   "license": "MIT",
-  "devDependencies": {
-    "commander": "^2.19.0"
-  },
   "dependencies": {
+    "commander": "^2.19.0",
     "dlv": "^1.1.3",
     "dayjs": "^1.7.8",
     "kleur": "^3.0.1",
