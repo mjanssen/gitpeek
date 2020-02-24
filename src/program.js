@@ -100,8 +100,8 @@ async function program(program = {}, jsonResponse = true, cli = false) {
   currentUser = program.currentUser || authorUndefined;
   author = currentUser ? 'current user' : program.author;
 
-  projectPath = program.projectPath;
-  format = program.format;
+  projectPath = dlv(program, 'projectPath', __dirname);
+  format = dlv(program, 'format', '%an <%ae> - %s');
   day = program.day;
   since = program.since;
   until = program.until;
@@ -114,7 +114,7 @@ async function program(program = {}, jsonResponse = true, cli = false) {
     until = setTime(dayjs(day), { time: 'night' });
   }
 
-  const skipDirectoriesArg = program.skipDirectories;
+  const skipDirectoriesArg = dlv(program, 'skipDirectories', null);
 
   skipDirectories = [
     ...(skipDirectoriesArg ? skipDirectoriesArg.split(',') : []),
