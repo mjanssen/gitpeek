@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/mjanssen/gitpeek.git"
   },
-  "main": "./src/index.js",
+  "main": "./src/program.js",
   "prettier": {
     "trailingComma": "es5",
     "singleQuote": true,
