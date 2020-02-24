@@ -1,6 +1,6 @@
 {
   "name": "gitpeek",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A fast way to recursively get git information per project on your working station",
   "bin": {
     "gitpeek": "./src/index.js"
