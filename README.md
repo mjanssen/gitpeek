@@ -1,5 +1,5 @@
-# Showgitlogs
-[![npm](https://img.shields.io/npm/v/showgitlogs.svg)](http://npm.im/showgitlogs)
+# gitpeek
+[![npm](https://img.shields.io/npm/v/gitpeek.svg)](http://npm.im/gitpeek)
 
 A __fast__ and easy way to recursively show gitlogs per project on your working station.
 
