@@ -2,7 +2,6 @@ const { lstatSync, readdirSync } = require('fs');
 const util = require('util');
 const { join } = require('path');
 const exec = util.promisify(require('child_process').exec);
-const args = require('yargs').argv;
 const dayjs = require('dayjs');
 const dlv = require('dlv');
 const { dim, bold, yellow, magenta } = require('kleur');
