@@ -19,7 +19,9 @@ npm i gitpeek
 
 # Usage
 
-`gitpeek --projectPath="/Users/you/code" --since="2020-02-17" --author=marnix`
+Use `gitpeek --help` for all available commands.
+
+`gitpeek --project-path="/Users/you/code" --since="2020-02-17" --author=marnix`
 
 ```
 const gitpeek = require('gitpeek');
