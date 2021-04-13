@@ -47,8 +47,6 @@ let counts = [0, 0];
 async function getGitDirectory(directories, callback = () => {}) {
   for (let i = 0; i < directories.length; i += 1) {
     const directory = directories[i];
-    const appendForSplit = '|@|';
-    const f = `${format}${_jsonResponse ? appendForSplit : ''}`;
     if (directory.match(/\.git/)) {
       counts[0] += 1;
       const { stdout, stderr } = await exec(
@@ -58,7 +56,7 @@ async function getGitDirectory(directories, callback = () => {}) {
           author === false
             ? '--author=".*"'
             : `--author=${currentUser ? '$(git config user.name)' : author}`
-        } --pretty=format:"${f}" --no-merges --reverse | cat`
+        } --pretty=format:"${format}" --no-merges --reverse | cat`
       );
 
       const isValid = !stderr && stdout !== '';
@@ -68,10 +66,10 @@ async function getGitDirectory(directories, callback = () => {}) {
         result.directories.push(directory);
         result.entries.push(
           ...stdout
-            .split(appendForSplit)
+            .split('\n\n')
             .map((output) => {
               const newLineSplit = output.split('\n');
-              const commit = newLineSplit[newLineSplit.length - 1];
+              const commit = newLineSplit[0];
               const files = output.match(/\t(.*)/gi);
 
               return {
