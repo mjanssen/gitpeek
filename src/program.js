@@ -66,10 +66,8 @@ async function getGitDirectory(directories, callback = () => {}) {
 
       if (_jsonResponse && isValid) {
         result.directories.push(directory);
-        const regex = new RegExp(`\n|${appendForSplit}`, 'g');
-        result.entries = [];
         result.entries.push(
-          stdout
+          ...stdout
             .split(appendForSplit)
             .map((output) => {
               const newLineSplit = output.split('\n');
