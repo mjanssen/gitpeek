@@ -7,7 +7,15 @@ const dlv = require('dlv');
 const { dim, bold, yellow, magenta } = require('kleur');
 
 let skipDirectories = ['node_modules', 'public', '.git', '_scripts', 'app', 'vendor'];
-let currentUser, author, projectPath, format, day, since, until, _jsonResponse = true;
+let currentUser,
+  author,
+  projectPath,
+  format,
+  day,
+  since,
+  until,
+  _jsonResponse = true;
+
 const result = {
   directories: [],
   entries: [],
@@ -26,7 +34,7 @@ function isDirectory(source) {
 
 function getDirectoriesInFolder(source) {
   return readdirSync(source)
-    .map(name => join(source, name))
+    .map((name) => join(source, name))
     .filter(isDirectory);
 }
 
@@ -36,7 +44,7 @@ function gitTimeFormat(date) {
 
 let counts = [0, 0];
 
-async function getGitDirectory(directories, callback = () => { }) {
+async function getGitDirectory(directories, callback = () => {}) {
   for (let i = 0; i < directories.length; i += 1) {
     const directory = directories[i];
     const appendForSplit = '|@|';
@@ -46,9 +54,12 @@ async function getGitDirectory(directories, callback = () => { }) {
       const { stdout, stderr } = await exec(
         `cd ${directory}; git log --date=local --since="${gitTimeFormat(
           since
-        )}" --until="${gitTimeFormat(
-          until
-        )}" ${author === false ? '--author=".*"' : `--author=${currentUser ? '$(git config user.name)' : author}`} --pretty=format:"${f}" --no-merges --reverse | cat`)
+        )}" --until="${gitTimeFormat(until)}" --name-status ${
+          author === false
+            ? '--author=".*"'
+            : `--author=${currentUser ? '$(git config user.name)' : author}`
+        } --pretty=format:"${f}" --no-merges --reverse | cat`
+      );
 
       const isValid = !stderr && stdout !== '';
       counts[1] += 1;
@@ -56,7 +67,24 @@ async function getGitDirectory(directories, callback = () => { }) {
       if (_jsonResponse && isValid) {
         result.directories.push(directory);
         const regex = new RegExp(`\n|${appendForSplit}`, 'g');
-        result.entries.push(...stdout.split(appendForSplit).map(output => ({ commit: output.replace(regex, ''), directory })).filter(e => e.commit));
+        result.entries = [];
+        result.entries.push(
+          stdout
+            .split(appendForSplit)
+            .map((output) => {
+              const newLineSplit = output.split('\n');
+              const commit = newLineSplit[newLineSplit.length - 1];
+              const files = output.match(/\t(.*)/gi);
+
+              return {
+                output,
+                commit,
+                directory,
+                files: files ? files.map((lines) => lines.trim()) : [],
+              };
+            })
+            .filter((e) => e.commit)
+        );
       }
 
       if (_jsonResponse === false && isValid) {
@@ -66,13 +94,13 @@ async function getGitDirectory(directories, callback = () => { }) {
       }
 
       if (counts[0] === counts[1]) {
-        callback();
+        return callback();
       }
     }
 
     if (directory.match(/\.git/) === null) {
       let directoryIsAllowed = true;
-      skipDirectories.forEach(string => {
+      skipDirectories.forEach((string) => {
         if (new RegExp(string).test(directory) && directoryIsAllowed === true)
           directoryIsAllowed = false;
       });
@@ -81,7 +109,7 @@ async function getGitDirectory(directories, callback = () => { }) {
         const lowerDirectories = getDirectoriesInFolder(directory);
         if (lowerDirectories.length > 0) {
           getGitDirectory(lowerDirectories, callback);
-        };
+        }
       }
     }
   }
@@ -128,9 +156,9 @@ async function program(program = {}, jsonResponse = true, cli = false) {
     yellow(
       bold(
         `Getting git logs for ${since.format('DD-MM-YYYY')}${
-        since.format('DD-MM-YYYY') !== until.format('DD-MM-YYYY')
-          ? ` to ${until.format('DD-MM-YYYY')}`
-          : ''
+          since.format('DD-MM-YYYY') !== until.format('DD-MM-YYYY')
+            ? ` to ${until.format('DD-MM-YYYY')}`
+            : ''
         }${author === false ? '' : ` from ${author}`}`
       )
     )
@@ -140,9 +168,10 @@ async function program(program = {}, jsonResponse = true, cli = false) {
 
   if (_jsonResponse === false) return getGitDirectory(directories);
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     getGitDirectory(directories, () => {
       if (cli) console.log(result);
+
       return resolve(result);
     });
   });
